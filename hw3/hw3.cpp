@@ -95,7 +95,7 @@ VOID BPB_2init()
     {
         BPB_2_bit[i].prediction = false;
     }
-    state='N'
+    state='N';
 }
 
 /* return the prediction for the given instruction */
