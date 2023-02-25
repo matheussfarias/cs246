@@ -132,7 +132,7 @@ VOID BPB_2update(ADDRINT ins_ptr, bool taken)
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = 'N'
+            state = 'N';
         }
     }
     else if (state == 't'){
