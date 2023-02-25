@@ -88,7 +88,7 @@ struct entry_2_bit
 VOID BPB_2init()
 {
     int i;
-    global char state;
+    char state;
 
     for(i = 0; i < SIZE; i++)
     {
