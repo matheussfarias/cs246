@@ -79,6 +79,8 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
 
 /* ===================================================================== */
 
+char state;
+
 struct entry_2_bit
 {
     bool prediction;
@@ -88,13 +90,12 @@ struct entry_2_bit
 VOID BPB_2init()
 {
     int i;
-    char state;
 
     for(i = 0; i < SIZE; i++)
     {
         BPB_2_bit[i].prediction = false;
     }
-    state = 'N';
+    state='N'
 }
 
 /* return the prediction for the given instruction */
@@ -114,44 +115,44 @@ VOID BPB_2update(ADDRINT ins_ptr, bool taken)
 
     index = mask & ins_ptr;
 
-    if (state == "N"){
+    if (state == 'N'){
         if (taken){
             BPB_2_bit[index].prediction = false;
-            state = "n"
+            state = 'n';
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = "N"
+            state = 'N';
         }
     }
-    else if (state == "n"){
+    else if (state == 'n'){
         if (taken){
             BPB_2_bit[index].prediction = true;
-            state = "t"
+            state = 't';
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = "N"
+            state = 'N'
         }
     }
-    else if (state == "t"){
+    else if (state == 't'){
         if (taken){
             BPB_2_bit[index].prediction = true;
-            state = "T"
+            state = 'T';
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = "n"
+            state = 'n';
         }
     }
-    else if (state == "T"){
+    else if (state == 'T'){
         if (taken){
             BPB_2_bit[index].prediction = true;
-            state = "T"
+            state = 'T';
         } 
         else{
             BPB_2_bit[index].prediction = true;
-            state = "t"
+            state = 't';
         }
     }
 }
