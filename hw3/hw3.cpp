@@ -53,7 +53,7 @@ struct entry_2_bit
 VOID BPB_init()
 {
     int i;
-
+    std::exit;
     for(i = 0; i < SIZE; i++)
     {
         BPB_2_bit[i].prediction = false;
