@@ -53,7 +53,7 @@ struct entry_2_bit
 VOID BPB_init()
 {
     int i;
-    std::exit;
+
     for(i = 0; i < SIZE; i++)
     {
         BPB_2_bit[i].prediction = false;
@@ -136,11 +136,11 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
             BPB_2_bit[index_h].state = 't';
         }
     }
-    std::exit;
+
     std::cout<< BPB_2_bit[index].ht << "\n" <<  taken << "\n" << ht_mask << "\n";
     BPB_2_bit[index].ht = ((BPB_2_bit[index].ht << 1) | taken) & ht_mask;
     std::cout << BPB_2_bit[index].ht;
-    std::exit;
+    std::exit();
 }
 
 
