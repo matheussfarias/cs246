@@ -66,6 +66,7 @@ VOID BPB_init()
 bool BPB_prediction(ADDRINT ins_ptr)
 {
     UINT64 index;
+    UINT64 index_h;
 
     index = mask & ins_ptr;
     index_h = BPB_2_bit[index].ht;
@@ -90,6 +91,7 @@ bool BPB_prediction(ADDRINT ins_ptr)
 VOID BPB_update(ADDRINT ins_ptr, bool taken)
 {
     UINT64 index;
+    UINT64 index_h;
 
     index = mask & ins_ptr;
     index_h = BPB_2_bit[index].ht
