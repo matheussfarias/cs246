@@ -70,6 +70,7 @@ bool BPB_prediction(ADDRINT ins_ptr)
     UINT64 index_h;
 
     index = mask & ins_ptr;
+    std::cout<< index << "\n";
     index_h = BPB_2_bit[index].ht;
 
     if (BPB_2_bit[index_h].state == 'N'){
@@ -137,10 +138,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
             BPB_2_bit[index_h].state = 't';
         }
     }
-
-    std::cout<< BPB_2_bit[index].ht << "\n" <<  taken << "\n" << ht_mask << "\n";
     BPB_2_bit[index].ht = ((BPB_2_bit[index].ht << 1) | taken) & ht_mask;
-    std::cout << BPB_2_bit[index].ht << "\n next\n";
 }
 
 
