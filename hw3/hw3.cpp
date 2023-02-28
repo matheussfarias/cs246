@@ -70,7 +70,6 @@ bool BPB_prediction(ADDRINT ins_ptr)
     UINT64 index_h;
 
     index = mask & ins_ptr;
-    std::cout<< index << "\n";
     index_h = BPB_2_bit[index].ht;
 
     if (BPB_2_bit[index_h].state == 'N'){
@@ -85,7 +84,7 @@ bool BPB_prediction(ADDRINT ins_ptr)
     else if (BPB_2_bit[index_h].state == 'T'){
         BPB_2_bit[index_h].prediction = true;
     }
-    
+    std::cout<<index_h<<"\n";
     return BPB_2_bit[index_h].prediction;
 }
 
