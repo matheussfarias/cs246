@@ -46,7 +46,7 @@ struct entry_2_bit
 {
     bool prediction;
     char state;
-    UINT16 ht;
+    UINT64 ht;
 } BPB_2_bit[SIZE];
 
 /* initialize the BPB, not taken by default*/
@@ -137,7 +137,10 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
         }
     }
 
+    std::cout<< BPB_2_bit[index].ht << "\n" <<  taken << "\n" << ht_mask << "\n";
     BPB_2_bit[index].ht = ((BPB_2_bit[index].ht << 1) | taken) & ht_mask;
+    std::cout << BPB_2_bit[index].ht;
+    std::exit;
 }
 
 
