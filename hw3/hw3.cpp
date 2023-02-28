@@ -46,7 +46,7 @@ struct entry_2_bit
 {
     bool prediction;
     char state;
-} PHT[SIZE];
+} BPB_2_bit[SIZE];
 
 /* initialize the BPB, not taken by default*/
 VOID BPB_init()
@@ -131,7 +131,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
         }
     }
 
-    ht = ((ht << 1) | taken) & ((1 << GHR_LENGTH) - 1);
+    ht = ((ht << 1) | taken) & ((1 << HT_LENGTH) - 1);
 }
 
 
