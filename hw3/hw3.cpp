@@ -104,6 +104,19 @@ bool BPB_2prediction(ADDRINT ins_ptr)
     UINT64 index;
 
     index = mask & ins_ptr;
+
+    if (state == 'N'){
+        BPB_2_bit[index].prediction = false;
+    }
+    else if (state == 'n'){
+        BPB_2_bit[index].prediction = false;
+    }
+    else if (state == 't'){
+        BPB_2_bit[index].prediction = true;
+    }
+    else if (state == 'T'){
+        BPB_2_bit[index].prediction = true;
+    }
     
     return BPB_2_bit[index].prediction;
 }
