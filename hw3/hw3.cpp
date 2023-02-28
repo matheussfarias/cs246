@@ -46,6 +46,7 @@ struct entry_2_bit
 {
     bool prediction;
     char state;
+    UINT64 ht;
 } BPB_2_bit[SIZE];
 
 /* initialize the BPB, not taken by default*/
