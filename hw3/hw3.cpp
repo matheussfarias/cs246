@@ -79,11 +79,10 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
 
 /* ===================================================================== */
 
-char state;
-
 struct entry_2_bit
 {
     bool prediction;
+    char state;
 } BPB_2_bit[SIZE];
 
 /* initialize the BPB, not taken by default*/
@@ -94,8 +93,8 @@ VOID BPB_2init()
     for(i = 0; i < SIZE; i++)
     {
         BPB_2_bit[i].prediction = false;
+        BPB_2_bit[i].state='N';
     }
-    state='N';
 }
 
 /* return the prediction for the given instruction */
@@ -105,16 +104,16 @@ bool BPB_2prediction(ADDRINT ins_ptr)
 
     index = mask & ins_ptr;
 
-    if (state == 'N'){
+    if (BPB_2_bit[index].state == 'N'){
         BPB_2_bit[index].prediction = false;
     }
-    else if (state == 'n'){
+    else if (BPB_2_bit[index].state == 'n'){
         BPB_2_bit[index].prediction = false;
     }
-    else if (state == 't'){
+    else if (BPB_2_bit[index].state == 't'){
         BPB_2_bit[index].prediction = true;
     }
-    else if (state == 'T'){
+    else if (BPB_2_bit[index].state == 'T'){
         BPB_2_bit[index].prediction = true;
     }
     
@@ -128,44 +127,44 @@ VOID BPB_2update(ADDRINT ins_ptr, bool taken)
 
     index = mask & ins_ptr;
 
-    if (state == 'N'){
+    if (BPB_2_bit[index].state == 'N'){
         if (taken){
             BPB_2_bit[index].prediction = false;
-            state = 'n';
+            BPB_2_bit[index].state = 'n';
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = 'N';
+            BPB_2_bit[index].state = 'N';
         }
     }
-    else if (state == 'n'){
+    else if (BPB_2_bit[index].state == 'n'){
         if (taken){
             BPB_2_bit[index].prediction = true;
-            state = 't';
+            BPB_2_bit[index].state = 't';
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = 'N';
+            BPB_2_bit[index].state = 'N';
         }
     }
-    else if (state == 't'){
+    else if (BPB_2_bit[index].state == 't'){
         if (taken){
             BPB_2_bit[index].prediction = true;
-            state = 'T';
+            BPB_2_bit[index].state = 'T';
         } 
         else{
             BPB_2_bit[index].prediction = false;
-            state = 'n';
+            BPB_2_bit[index].state = 'n';
         }
     }
-    else if (state == 'T'){
+    else if (BPB_2_bit[index].state == 'T'){
         if (taken){
             BPB_2_bit[index].prediction = true;
-            state = 'T';
+            BPB_2_bit[index].state = 'T';
         } 
         else{
             BPB_2_bit[index].prediction = true;
-            state = 't';
+            BPB_2_bit[index].state = 't';
         }
     }
 }
