@@ -37,7 +37,7 @@ UINT64 CountCorrect = 0;
 /* which is mentioned in cs246-lecture-speculation.pdf but with 1-bit    */
 /* ===================================================================== */
 #define SIZE 4096
-#define HT_LENGTH 1<<16
+#define HT_LENGTH 65536
 
 UINT64 mask = (SIZE-1);
 UINT64 ht_mask = (HT_LENGTH-1);
