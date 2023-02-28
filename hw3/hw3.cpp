@@ -141,7 +141,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
         }
     }
 
-    index_h = ((index_h << 1) | taken) & ht_mask;
+    ht[index] = ((ht[index] << 1) | taken) & ht_mask;
 }
 
 
