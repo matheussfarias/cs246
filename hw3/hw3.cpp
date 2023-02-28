@@ -202,11 +202,11 @@ VOID br_predict(ADDRINT ins_ptr, INT32 taken)
 	
 	
 	//count the correctly predicted branches
-	if(BPB_prediction(ins_ptr) == taken) 
+	if(BPB_2prediction(ins_ptr) == taken) 
 		CountCorrect++;
 
 	//update branch prediction buffer
-	BPB_update(ins_ptr, taken);
+	BPB_2update(ins_ptr, taken);
 
     if(CountSeen == KnobBranchLimit.Value())
     {
@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
         return Usage();
     }
 
-    BPB_init();
+    BPB_2init();
         
     INS_AddInstrumentFunction(Instruction, 0);
     PIN_AddFiniFunction(Fini, 0);
