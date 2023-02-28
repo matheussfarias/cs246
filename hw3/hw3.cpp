@@ -5,6 +5,7 @@
 #include <map>
 #include <cstdlib>
 #include "pin.H"
+#include <stdio.h>
 
 using std::ofstream;
 using std::cout;
