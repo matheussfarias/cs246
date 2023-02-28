@@ -46,8 +46,9 @@ struct entry_2_bit
 {
     bool prediction;
     char state;
-    UINT64 ht;
 } BPB_2_bit[SIZE];
+
+UINT64 ht[HT_LENGTH];
 
 /* initialize the BPB, not taken by default*/
 VOID BPB_init()
@@ -58,7 +59,10 @@ VOID BPB_init()
     {
         BPB_2_bit[i].prediction = false;
         BPB_2_bit[i].state='N';
-        BPB_2_bit[i].ht=0;
+    }
+    for(i = 0; i < HT_LENGTH; i++)
+    {
+        ht[i]=0;
     }
 }
 
@@ -69,7 +73,7 @@ bool BPB_prediction(ADDRINT ins_ptr)
     UINT64 index_h;
 
     index = mask & ins_ptr;
-    index_h = BPB_2_bit[index].ht;
+    index_h = ht[index];
 
     if (BPB_2_bit[index_h].state == 'N'){
         BPB_2_bit[index_h].prediction = false;
@@ -94,7 +98,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
     UINT64 index_h;
 
     index = mask & ins_ptr;
-    index_h = BPB_2_bit[index].ht;
+    index_h = ht[index];
 
     if (BPB_2_bit[index_h].state == 'N'){
         if (taken){
@@ -137,7 +141,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
         }
     }
 
-    BPB_2_bit[index].ht = ((BPB_2_bit[index].ht << 1) | taken) & ht_mask;
+    index_h = ((index_h << 1) | taken) & ht_mask;
 }
 
 
