@@ -137,7 +137,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
             BPB_2_bit[index_h].state = 't';
         }
     }
-    BPB_2_bit[index].ht = ((BPB_2_bit[index].ht << 1) | taken) & ht_mask;
+    BPB_2_bit[index].ht = ((BPB_2_bit[index].ht << 1) | taken) % HT_LENGTH;
 }
 
 
