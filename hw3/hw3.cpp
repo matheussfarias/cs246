@@ -37,9 +37,10 @@ UINT64 CountCorrect = 0;
 /* which is mentioned in cs246-lecture-speculation.pdf but with 1-bit    */
 /* ===================================================================== */
 #define SIZE 4096
-#define HT_LENGTH 16
+#define HT_LENGTH 1<<16
 
 UINT64 mask = (SIZE-1);
+UINT64 ht_mask = (HT_LENGTH-1);
 UINT64 ht = 0;
 
 struct entry_2_bit
@@ -131,7 +132,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
         }
     }
 
-    ht = ((ht << 1) | taken) & ((1 << HT_LENGTH) - 1);
+    ht = ((ht << 1) | taken) & ht_mask;
 }
 
 
