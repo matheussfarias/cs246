@@ -58,7 +58,7 @@ VOID BPB_init()
     {
         BPB_2_bit[i].prediction = false;
         BPB_2_bit[i].state='N';
-        for(j = 0; j < HT_LENGTH; j++)
+        for(int j = 0; j < HT_LENGTH; j++)
         {
             BPB_2_bit[i].ht[j]=0;
         }
