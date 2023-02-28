@@ -36,14 +36,19 @@ UINT64 CountCorrect = 0;
 /* 1-bit Branch predictor (using Branch Prediction Buffer),              */
 /* which is mentioned in cs246-lecture-speculation.pdf but with 1-bit    */
 /* ===================================================================== */
-#define SIZE 1024
+#define SIZE 4096
+#define HT_LENGTH 65536
+
 UINT64 mask = (SIZE-1);
+UINT64 ht_mask = (HT_LENGTH-1);
 
 struct entry_2_bit
 {
     bool prediction;
     char state;
 } BPB_2_bit[SIZE];
+
+UINT64 ht[HT_LENGTH];
 
 /* initialize the BPB, not taken by default*/
 VOID BPB_init()
@@ -55,78 +60,88 @@ VOID BPB_init()
         BPB_2_bit[i].prediction = false;
         BPB_2_bit[i].state='N';
     }
+    for(i = 0; i < HT_LENGTH; i++)
+    {
+        ht[i]=0;
+    }
 }
 
 /* return the prediction for the given instruction */
 bool BPB_prediction(ADDRINT ins_ptr)
 {
     UINT64 index;
+    UINT64 index_h;
 
     index = mask & ins_ptr;
+    index_h = ht[index];
 
-    if (BPB_2_bit[index].state == 'N'){
-        BPB_2_bit[index].prediction = false;
+    if (BPB_2_bit[index_h].state == 'N'){
+        BPB_2_bit[index_h].prediction = false;
     }
-    else if (BPB_2_bit[index].state == 'n'){
-        BPB_2_bit[index].prediction = false;
+    else if (BPB_2_bit[index_h].state == 'n'){
+        BPB_2_bit[index_h].prediction = false;
     }
-    else if (BPB_2_bit[index].state == 't'){
-        BPB_2_bit[index].prediction = true;
+    else if (BPB_2_bit[index_h].state == 't'){
+        BPB_2_bit[index_h].prediction = true;
     }
-    else if (BPB_2_bit[index].state == 'T'){
-        BPB_2_bit[index].prediction = true;
+    else if (BPB_2_bit[index_h].state == 'T'){
+        BPB_2_bit[index_h].prediction = true;
     }
     
-    return BPB_2_bit[index].prediction;
+    return BPB_2_bit[index_h].prediction;
 }
 
 /* update the BPB entry */
 VOID BPB_update(ADDRINT ins_ptr, bool taken)
 {
     UINT64 index;
+    UINT64 index_h;
 
     index = mask & ins_ptr;
+    index_h = ht[index];
 
-    if (BPB_2_bit[index].state == 'N'){
+    if (BPB_2_bit[index_h].state == 'N'){
         if (taken){
-            BPB_2_bit[index].prediction = false;
-            BPB_2_bit[index].state = 'n';
+            BPB_2_bit[index_h].prediction = false;
+            BPB_2_bit[index_h].state = 'n';
         } 
         else{
-            BPB_2_bit[index].prediction = false;
-            BPB_2_bit[index].state = 'N';
+            BPB_2_bit[index_h].prediction = false;
+            BPB_2_bit[index_h].state = 'N';
         }
     }
-    else if (BPB_2_bit[index].state == 'n'){
+    else if (BPB_2_bit[index_h].state == 'n'){
         if (taken){
-            BPB_2_bit[index].prediction = true;
-            BPB_2_bit[index].state = 't';
+            BPB_2_bit[index_h].prediction = true;
+            BPB_2_bit[index_h].state = 't';
         } 
         else{
-            BPB_2_bit[index].prediction = false;
-            BPB_2_bit[index].state = 'N';
+            BPB_2_bit[index_h].prediction = false;
+            BPB_2_bit[index_h].state = 'N';
         }
     }
-    else if (BPB_2_bit[index].state == 't'){
+    else if (BPB_2_bit[index_h].state == 't'){
         if (taken){
-            BPB_2_bit[index].prediction = true;
-            BPB_2_bit[index].state = 'T';
+            BPB_2_bit[index_h].prediction = true;
+            BPB_2_bit[index_h].state = 'T';
         } 
         else{
-            BPB_2_bit[index].prediction = false;
-            BPB_2_bit[index].state = 'n';
+            BPB_2_bit[index_h].prediction = false;
+            BPB_2_bit[index_h].state = 'n';
         }
     }
-    else if (BPB_2_bit[index].state == 'T'){
+    else if (BPB_2_bit[index_h].state == 'T'){
         if (taken){
-            BPB_2_bit[index].prediction = true;
-            BPB_2_bit[index].state = 'T';
+            BPB_2_bit[index_h].prediction = true;
+            BPB_2_bit[index_h].state = 'T';
         } 
         else{
-            BPB_2_bit[index].prediction = true;
-            BPB_2_bit[index].state = 't';
+            BPB_2_bit[index_h].prediction = true;
+            BPB_2_bit[index_h].state = 't';
         }
     }
+
+    ht[index] = ((ht[index] << 1) | taken) & ht_mask;
 }
 
 
