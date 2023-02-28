@@ -39,11 +39,11 @@ UINT64 CountCorrect = 0;
 #define SIZE 1024
 UINT64 mask = (SIZE-1);
 
-struct entry_one_bit
+struct entry_2_bit
 {
     bool prediction;
-
-} BPB_one_bit[SIZE];
+    char state;
+} BPB_2_bit[SIZE];
 
 /* initialize the BPB, not taken by default*/
 VOID BPB_init()
@@ -52,7 +52,8 @@ VOID BPB_init()
 
     for(i = 0; i < SIZE; i++)
     {
-        BPB_one_bit[i].prediction = false;
+        BPB_2_bit[i].prediction = false;
+        BPB_2_bit[i].state='N';
     }
 }
 
@@ -62,8 +63,21 @@ bool BPB_prediction(ADDRINT ins_ptr)
     UINT64 index;
 
     index = mask & ins_ptr;
+
+    if (BPB_2_bit[index].state == 'N'){
+        BPB_2_bit[index].prediction = false;
+    }
+    else if (BPB_2_bit[index].state == 'n'){
+        BPB_2_bit[index].prediction = false;
+    }
+    else if (BPB_2_bit[index].state == 't'){
+        BPB_2_bit[index].prediction = true;
+    }
+    else if (BPB_2_bit[index].state == 'T'){
+        BPB_2_bit[index].prediction = true;
+    }
     
-    return BPB_one_bit[index].prediction;
+    return BPB_2_bit[index].prediction;
 }
 
 /* update the BPB entry */
@@ -73,7 +87,46 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
 
     index = mask & ins_ptr;
 
-    BPB_one_bit[index].prediction = taken;
+    if (BPB_2_bit[index].state == 'N'){
+        if (taken){
+            BPB_2_bit[index].prediction = false;
+            BPB_2_bit[index].state = 'n';
+        } 
+        else{
+            BPB_2_bit[index].prediction = false;
+            BPB_2_bit[index].state = 'N';
+        }
+    }
+    else if (BPB_2_bit[index].state == 'n'){
+        if (taken){
+            BPB_2_bit[index].prediction = true;
+            BPB_2_bit[index].state = 't';
+        } 
+        else{
+            BPB_2_bit[index].prediction = false;
+            BPB_2_bit[index].state = 'N';
+        }
+    }
+    else if (BPB_2_bit[index].state == 't'){
+        if (taken){
+            BPB_2_bit[index].prediction = true;
+            BPB_2_bit[index].state = 'T';
+        } 
+        else{
+            BPB_2_bit[index].prediction = false;
+            BPB_2_bit[index].state = 'n';
+        }
+    }
+    else if (BPB_2_bit[index].state == 'T'){
+        if (taken){
+            BPB_2_bit[index].prediction = true;
+            BPB_2_bit[index].state = 'T';
+        } 
+        else{
+            BPB_2_bit[index].prediction = true;
+            BPB_2_bit[index].state = 't';
+        }
+    }
 }
 
 
@@ -116,7 +169,7 @@ VOID br_predict(ADDRINT ins_ptr, INT32 taken)
 	CountSeen++;
 	//count the take branches
 	if (taken){
-        CountTaken++;
+			CountTaken++;
 	}
 	
 	
