@@ -70,7 +70,7 @@ bool BPB_prediction(ADDRINT ins_ptr)
     UINT64 index_h;
 
     index = mask & ins_ptr;
-    index_h = BPB_2_bit[index].ht & mask;
+    index_h = BPB_2_bit[index].ht & ht_mask;
 
     if (BPB_2_bit[index_h].state == 'N'){
         BPB_2_bit[index_h].prediction = false;
@@ -95,7 +95,7 @@ VOID BPB_update(ADDRINT ins_ptr, bool taken)
     UINT64 index_h;
 
     index = mask & ins_ptr;
-    index_h = BPB_2_bit[index].ht & mask;
+    index_h = BPB_2_bit[index].ht & ht_mask;
 
     if (BPB_2_bit[index_h].state == 'N'){
         if (taken){
