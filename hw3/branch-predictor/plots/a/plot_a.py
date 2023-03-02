@@ -13,6 +13,8 @@ size = [128,256, 512, 1024, 2048, 4096, 8192]
 fig, ax = plt.subplots()
 plt.semilogx(size, deal_naive, marker = 'o', ms=5, lw=2, label = '1-bit', color = 'crimson')
 plt.semilogx(size, deal_2bit, marker = 's', ms=5, lw=2, label = '2-bit', color='navy')
+plt.axhline(y=0.5, color='black', linestyle='-')
+plt.show()
 plt.xscale('log',base=2)
 plt.xlabel(r'Branch Prediction Buffer size')
 plt.ylabel(r'Accuracy')
