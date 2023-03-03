@@ -13,8 +13,10 @@ quantum_16_2level = [99.80, 99.80, 99.80, 99.81, 99.81, 99.81, 99.81, 99.81, 99.
 size_deal = [128,256, 512, 1024, 2048, 4096]
 size_quantum = [4, 8, 16, 32, 64, 128,256, 512, 1024, 2048, 4096]
 
-deal_perf = 89.85
-quantum_perf = 87.87
+#deal_perf = 89.85
+#quantum_perf = 87.87
+deal_perf = 98.72
+quantum_perf = 98.12
 
 fig, ax = plt.subplots()
 plt.semilogx(size_deal, deal_12_2level, marker = 'o', ms=5, lw=2, label = '12 bits', color = 'crimson')

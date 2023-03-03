@@ -10,8 +10,10 @@ quantum_2bit = [92.67, 92.85, 93.27, 93.25, 93.27, 93.24, 93.24, 93.24, 93.25, 9
 size_deal = [128,256, 512, 1024, 2048, 4096, 8192]
 size_quantum = [4, 8, 16, 32, 64, 128,256, 512, 1024, 2048, 4096, 8192]
 
-deal_perf = 89.85
-quantum_perf = 87.87
+#deal_perf = 89.85
+#quantum_perf = 87.87
+deal_perf = 98.72
+quantum_perf = 98.12
 
 fig, ax = plt.subplots()
 plt.semilogx(size_deal, deal_naive, marker = 'o', ms=5, lw=2, label = '1-bit', color = 'crimson')
