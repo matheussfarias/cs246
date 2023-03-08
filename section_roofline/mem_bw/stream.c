@@ -113,7 +113,9 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a, b, and c arrays
-			a[j] = scalar*b[j] + c[j];
+			asm("imul %%eax, %%ecx, %%ebx;" : "a" (scalar): "b" (b[j]));
+			asm("add %%eax, %%edx;" : "c" (scalar*b[j]): "d" (c[j]));
+			//a[j] = scalar*b[j] + c[j];
 		}
 		times[2][k] = mysecond() - times[2][k];
 		
