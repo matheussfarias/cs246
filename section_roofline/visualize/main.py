@@ -11,7 +11,7 @@ if __name__ == "__main__":
     COMPUTE_ROOFLINE_VALUES = [   None, None, None, None] # use GFLOPS SP
     COMPUTE_ROOFLINE_LABELS = [  "FP_OP",   "AVX", "AVX512", "AVX512FMA"]
 
-    MEMORY_ROOFLINE_VALUES = [  None, None, None, None] # use GB/sec
+    MEMORY_ROOFLINE_VALUES = [  10.51, 10.21, 10.96, 11.34] # use GB/sec
     MEMORY_ROOFLINE_LABELS = [  "load",  "copy",  "stream",  "triad"]
 
     # rename server using `lscpu` command
