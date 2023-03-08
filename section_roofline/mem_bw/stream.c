@@ -102,7 +102,7 @@ int main() {
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a and b arrays
 			asm("mov %%eax, %%ebx;" : : "b" (b[j]));
-			asm("mov %%ebx, %%eax;" : : "b" (a[j]));
+			asm("mov %%eax, %%ebx;" : : "b" (a[j]));
 			//a[j] = b[j];
 		}
 
