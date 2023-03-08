@@ -101,8 +101,9 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a and b arrays
-			asm("mov %%eax, %%ebx;" : "a" (a[j]) : "b" (b[j]));
-			a[j] = b[j];
+			asm("mov %%eax, %%ebx;" : : "b" (b[j]));
+			asm("mov %%ebx, %%eax;" : : "b" (a[j]));
+			//a[j] = b[j];
 		}
 
 		times[1][k] = mysecond() - times[1][k];

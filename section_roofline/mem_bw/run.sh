@@ -19,7 +19,7 @@ export NUMA_FLAGS='numactl --membind 0 --cpunodebind 0' # put all data on socket
 # build and run
 rm stream_c.exe
 
-gcc -O0 -fopenmp stream.c -o stream_c.exe # double precision
+gcc -O2 -fopenmp stream.c -o stream_c.exe # double precision
         
 $NUMA_FLAGS ./stream_c.exe 
 
