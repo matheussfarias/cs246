@@ -4,7 +4,6 @@
 # include <float.h>
 # include <limits.h>
 # include <sys/time.h>
-#include <iostream>
 
 #ifndef STREAM_ARRAY_SIZE
 #   define STREAM_ARRAY_SIZE	50000000
@@ -101,19 +100,18 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a and b arrays
-			asm("mov %%eax, %%ebx;" : : "b" (b[j]));
-			asm("mov %%eax, %%ebx;" : : "a" (a[j]));
+			asm("mov %%eax, %%ebx;" : "a" (a[j]) : "b" (b[j]));
 			//a[j] = b[j];
 		}
 
 		times[1][k] = mysecond() - times[1][k];
-		std::cout << a[0];
-		std::exit(1);
+
 		// stream
 		times[2][k] = mysecond();
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a, b, and c arrays
+			asm("mov %%eax, %%ebx;" : : "a" (a[j]));
 			asm("imul %%eax, %%ecx, %%ebx;" : "a" (scalar): "b" (b[j]));
 			asm("add %%eax, %%edx;" : "c" (scalar*b[j]): "d" (c[j]));
 			//a[j] = scalar*b[j] + c[j];
