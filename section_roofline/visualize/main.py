@@ -8,10 +8,10 @@ if __name__ == "__main__":
     # TODO: insert your recorded values here for peak compute / bw
     # use maximum number of cores per socket
     
-    COMPUTE_ROOFLINE_VALUES = [   158.13, 620.24, 1206.46, 2410.31] # use GFLOPS SP
+    COMPUTE_ROOFLINE_VALUES = [   158.30, 631.26, 1207.60, 2400.97] # use GFLOPS SP
     COMPUTE_ROOFLINE_LABELS = [  "FP_OP",   "AVX", "AVX512", "AVX512FMA"]
 
-    MEMORY_ROOFLINE_VALUES = [  10.51, 10.21, 10.96, 11.34] # use GB/sec
+    MEMORY_ROOFLINE_VALUES = [  64.16, 41.82, 46.37, 50.12] # use GB/sec
     MEMORY_ROOFLINE_LABELS = [  "load",  "copy",  "stream",  "triad"]
 
     # rename server using `lscpu` command
