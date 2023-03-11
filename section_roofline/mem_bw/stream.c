@@ -100,12 +100,7 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a and b arrays
-			asm("mov %1, %%ecx\n\t"
-    			"mov %%ecx, %0\n\t"
-    			: "=r" (a[j])
-    			: "r" (b[j])
-    			: "%ecx"
-				);
+			asm("mov %1, %%ecx\n\t;" "mov %%ecx, %0\n\t;" : "=r" (a[j]) : "r" (b[j]) : "%ecx");
 			//a[j] = b[j];
 		}
 
