@@ -100,13 +100,7 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a and b arrays
-			asm("mov %1, %%edx\n\t"
-				"mov %%edx, %2\n\t"
-				: "=r" (a[j])
-				: "0" (b[j])
-				: "%edx"
-			);
-			//a[j] = b[j];
+			a[j] = b[j];
 		}
 
 		times[1][k] = mysecond() - times[1][k];
@@ -116,9 +110,7 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a, b, and c arrays
-			asm("imul %2, %1" : "=r" (b[j]) : "0" (b[j]), "r" (scalar));
-			asm("add %2, %1" : "=r" (a[j]) : "0" (b[j]), "r" (c[j]));
-			//a[j] = scalar*b[j] + c[j];
+			a[j] = scalar*b[j] + c[j];
 		}
 		times[2][k] = mysecond() - times[2][k];
 		
@@ -127,9 +119,7 @@ int main() {
 		#pragma omp parallel for private(j)
 		for (j=0; j<STREAM_ARRAY_SIZE; j++){
 			// TODO: implement using a, b, c, and d arrays
-			asm("imul %2, %1" : "=r" (b[j]) : "0" (b[j]), "r" (c[j]));
-			asm("add %2, %1" : "=r" (a[j]) : "0" (b[j]), "r" (d[j]));
-			//a[j] = b[j]*c[j] + d[j];		
+			a[j] = b[j]*c[j] + d[j];		
 		}
 		times[3][k] = mysecond() - times[3][k];
 	}
