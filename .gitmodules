@@ -1,3 +1,6 @@
 [submodule "hw4/hw4/cacti"]
 	path = hw4/hw4/cacti
 	url = https://github.com/HewlettPackard/cacti
+[submodule "hw4/cacti"]
+	path = hw4/cacti
+	url = https://github.com/HewlettPackard/cacti
