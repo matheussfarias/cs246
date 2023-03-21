@@ -161,16 +161,6 @@ We only track the number of hits and misses in both L1 and L2 caches.
 In both L1 and L2 caches, we use a simple LRU algorithm as cache replacement policy.
 
 */
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile quantum/quantum1.out -- $HOME/shared_data/benchmarks/libquantum_O3 400 25
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile quantum/quantum2.out -- $HOME/shared_data/benchmarks/libquantum_O3 400 25
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile quantum/quantum4.out -- $HOME/shared_data/benchmarks/libquantum_O3 400 25
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile quantum/quantum8.out -- $HOME/shared_data/benchmarks/libquantum_O3 400 25
-
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile hmmer/hmmer1.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile hmmer/hmmer2.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile hmmer/hmmer4.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
-$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile hmmer/hmmer8.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
-
 /* ===================================================================== */
 /* Commandline Switches */
 /* ===================================================================== */
