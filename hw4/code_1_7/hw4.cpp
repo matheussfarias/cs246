@@ -440,11 +440,6 @@ void cache::addressRequest( unsigned long address ) {
     unsigned long tagField = getTag( address );
     unsigned long setField = getSet( address );
 
-    if ( victim != nullptr ){
-        std::cout << assoc << "\n";
-        std::exit(1);
-    }
-
     // Hit or Miss ?
     int index = isHit( tagField, setField );
 
@@ -452,7 +447,7 @@ void cache::addressRequest( unsigned long address ) {
     addRequest();
 
     // Miss
-    if( index == -1 ) {
+    if( index == -1 && victim == nullptr ) {
         // Get the LRU index
         int indexLRU = getLRU( setField );
         if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
@@ -480,6 +475,39 @@ void cache::addressRequest( unsigned long address ) {
         cacheMem[ indexLRU + setField*assoc].Tag = tagField;
         cacheMem[ indexLRU + setField*assoc].Valid = true;
         updateLRU( setField, indexLRU );
+    }
+    else if ( index == -1 &&  victim != nullptr ){
+        int index_victim = victim->isHit(tagField, setField);
+        // miss in victim
+        if (index_victim == -1){
+
+        }
+        else{
+            // hit because of victim
+            addHit();
+
+            // Get the LRU index
+            int indexLRU = getLRU( setField );
+            // Update LRU / Tag / Valid
+            updateLRU( setField, index );
+
+            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
+                addEntryRemoved();
+            }
+
+            // Write the evicted entry to the victim cache
+            if( writebackDirty &&
+            cacheMem[ indexLRU + setField*assoc].Valid == true) {
+                int tag = cacheMem[indexLRU + setField*assoc].Tag;
+                tag = tag << (getSetSize() + getBlockOffsetSize());
+                int Set = setField;
+                Set = Set << (getBlockOffsetSize());
+                int lru_addr = tag + Set;
+                victim->addressRequest(lru_addr);
+            }   
+
+
+        }
     }
     else {
         // Count that hit
