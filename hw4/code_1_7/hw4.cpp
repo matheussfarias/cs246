@@ -43,7 +43,7 @@ public:
     virtual unsigned int getSetSize() {return setSize;}
 
 protected:
-    cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, bool writebackDirty, cache* victim );
+    cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel,  cache* victim, bool writebackDirty);
 
     //Calculate the Tag and Set of an address based on this cache's properties
     unsigned int getTag( unsigned int address );
@@ -105,7 +105,7 @@ protected:
 class memory : public cache {
 public:
     memory() :
-        cache(1, 1, 1, nullptr, false, nullptr)
+        cache(1, 1, 1, nullptr, nullptr, false)
     { }
 
     void addressRequest( unsigned long address ) {
@@ -125,21 +125,21 @@ public:
 class l1icache : public cache {
 public:
     l1icache( int blockSize, int totalCacheSize, int associativity, cache *nextLevel, cache *victim) :
-        cache( blockSize, totalCacheSize, associativity, nextLevel, false, nullptr)
+        cache( blockSize, totalCacheSize, associativity, nextLevel, nullptr, false)
     { }
 };
 
 class l1dcache : public cache {
 public:
     l1dcache( int blockSize, int totalCacheSize, int associativity, cache *nextLevel, cache *victim) :
-        cache( blockSize, totalCacheSize, associativity, nextLevel, true, victim)
+        cache( blockSize, totalCacheSize, associativity, nextLevel, victim, true)
     { }
 };
 
 class l2cache : public cache {
 public:
     l2cache(int blockSize, int totalCacheSize, int associativity, cache *nextLevel, cache *victim) :
-        cache( blockSize, totalCacheSize, associativity, nextLevel, true, nullptr)
+        cache( blockSize, totalCacheSize, associativity, nextLevel, nullptr, true)
     { }
 };
 
@@ -193,7 +193,7 @@ void PrintResults(void);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: you will need to implement functions which will be called for the victim cache!
 victim_cache::victim_cache( int blockSize, int totalCacheSize) :
-    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, nullptr, false, nullptr)
+    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, nullptr, nullptr, false)
     { }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-cache::cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, bool writebackDirty, cache* victim) :
+cache::cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, cache* victim, bool writebackDirty) :
     // Set Cache properties
     blockSz(blockSize),
     totalCacheSz(totalCacheSize),
