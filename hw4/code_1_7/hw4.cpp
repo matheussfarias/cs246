@@ -218,9 +218,9 @@ cache::cache( int blockSize, int totalCacheSize, int associativity, cache* nextL
     maxSetValue((int) 1 << setSize),
     // Next level properties
     nextLevel(nextLevel),
-    writebackDirty(writebackDirty),
     // Victim cache
-    victim(victim)
+    victim(victim),
+    writebackDirty(writebackDirty)
 {
     // Allocate memory for the cache array
     cacheMem = new cacheEntry[totalCacheSize/blockSize];
