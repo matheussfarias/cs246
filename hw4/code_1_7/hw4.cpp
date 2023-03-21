@@ -445,7 +445,7 @@ void cache::addressRequest( unsigned long address ) {
         std::exit(1);
     }
 
-    std::cout << "oi";
+    std::cout << victim;
     std::exit(1);
     // Hit or Miss ?
     int index = isHit( tagField, setField );
