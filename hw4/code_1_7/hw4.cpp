@@ -43,7 +43,7 @@ public:
     virtual unsigned int getSetSize() {return setSize;}
 
 protected:
-    cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, bool writebackDirty );
+    cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, bool writebackDirty, cache* victim );
 
     //Calculate the Tag and Set of an address based on this cache's properties
     unsigned int getTag( unsigned int address );
@@ -95,8 +95,9 @@ protected:
     // The actual cache array
     cacheEntry* cacheMem;
 
-    // The next level in the cache hierachy
+    // The next level in the cache hierachy, and a pointer to victim if wanted
     cache* const nextLevel;
+    cache* const victim;
     // Does this cache write evicted items to the next level (icaches don't need to)
     const bool writebackDirty;
 };
@@ -123,22 +124,22 @@ public:
 
 class l1icache : public cache {
 public:
-    l1icache( int blockSize, int totalCacheSize, int associativity, cache *nextLevel) :
-        cache( blockSize, totalCacheSize, associativity, nextLevel, false)
+    l1icache( int blockSize, int totalCacheSize, int associativity, cache *nextLevel, cache *victim) :
+        cache( blockSize, totalCacheSize, associativity, nextLevel, false, nullptr)
     { }
 };
 
 class l1dcache : public cache {
 public:
-    l1dcache( int blockSize, int totalCacheSize, int associativity, cache *nextLevel) :
-        cache( blockSize, totalCacheSize, associativity, nextLevel, true)
+    l1dcache( int blockSize, int totalCacheSize, int associativity, cache *nextLevel, cache *victim) :
+        cache( blockSize, totalCacheSize, associativity, nextLevel, true, victim)
     { }
 };
 
 class l2cache : public cache {
 public:
-    l2cache(int blockSize, int totalCacheSize, int associativity, cache *nextLevel) :
-        cache( blockSize, totalCacheSize, associativity, nextLevel, true)
+    l2cache(int blockSize, int totalCacheSize, int associativity, cache *nextLevel, cache *victim) :
+        cache( blockSize, totalCacheSize, associativity, nextLevel, true, nullptr)
     { }
 };
 
@@ -178,6 +179,7 @@ KNOB<UINT64> KnobInstructionCount(KNOB_MODE_WRITEONCE, "pintool",
 l1icache* icache;
 l1dcache* dcache;
 l2cache* llcache;
+victim_cache* vcache;
 memory* mem;
 
 // Keep track if instruction counts so we know when to end simmulation
@@ -191,7 +193,7 @@ void PrintResults(void);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: you will need to implement functions which will be called for the victim cache!
 victim_cache::victim_cache( int blockSize, int totalCacheSize) :
-    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, nullptr, false)
+    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, nullptr, false, nullptr)
     { }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,7 +203,7 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-cache::cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, bool writebackDirty) :
+cache::cache( int blockSize, int totalCacheSize, int associativity, cache* nextLevel, bool writebackDirty, cache* victim) :
     // Set Cache properties
     blockSz(blockSize),
     totalCacheSz(totalCacheSize),
@@ -216,7 +218,9 @@ cache::cache( int blockSize, int totalCacheSize, int associativity, cache* nextL
     maxSetValue((int) 1 << setSize),
     // Next level properties
     nextLevel(nextLevel),
-    writebackDirty(writebackDirty)
+    writebackDirty(writebackDirty),
+    // Victim cache
+    victim(victim)
 {
     // Allocate memory for the cache array
     cacheMem = new cacheEntry[totalCacheSize/blockSize];
@@ -436,6 +440,10 @@ void cache::addressRequest( unsigned long address ) {
     unsigned long tagField = getTag( address );
     unsigned long setField = getSet( address );
 
+    if ( victim != nullptr ):
+        std::cout << assoc << "\n";
+        std::exit(1);
+
     // Hit or Miss ?
     int index = isHit( tagField, setField );
 
@@ -530,15 +538,15 @@ void CreateCaches(void)
         switch(i){
             case 0:
                 parser >> bsize >> comma >> csize >> comma >> assoc;
-                llcache = new l2cache(bsize, csize, assoc, mem);
+                llcache = new l2cache(bsize, csize, assoc, mem, nullptr);
                 break;
             case 1:
                 parser >> bsize >> comma >> csize >> comma >> assoc;
-                icache = new l1icache(bsize, csize, assoc, llcache);
+                icache = new l1icache(bsize, csize, assoc, llcache, nullptr);
                 break;
             case 2:
                 parser >> bsize >> comma >> csize >> comma >> assoc >> comma >> vsize;
-                dcache = new l1dcache(bsize, csize, assoc, llcache);
+                dcache = new l1dcache(bsize, csize, assoc, llcache, vcache);
                 break;
             default:
                 break;
