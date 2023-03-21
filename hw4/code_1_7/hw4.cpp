@@ -440,10 +440,10 @@ void cache::addressRequest( unsigned long address ) {
     unsigned long tagField = getTag( address );
     unsigned long setField = getSet( address );
 
-    if ( victim != nullptr ):
+    if ( victim != nullptr ){
         std::cout << assoc << "\n";
         std::exit(1);
-
+    }
     // Hit or Miss ?
     int index = isHit( tagField, setField );
 
