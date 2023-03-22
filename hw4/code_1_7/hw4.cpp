@@ -197,6 +197,56 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
     cache( blockSize, totalCacheSize, totalCacheSize / blockSize, llcache, nullptr, false)
     { }
 
+    void victim_cache::isHitVC( unsigned long address, int lru_addr)
+    {
+        // Compute Set / Tag
+        unsigned long tagField = getTag( address );
+        unsigned long setField = getSet( address );
+
+        // Hit or Miss ?
+        int index = vcache->isHit( tagField, setField );
+
+        // miss
+        if(index == -1){
+            // Get the LRU index
+            int indexLRU = getLRU( setField );
+            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
+                addEntryRemoved();
+            }
+
+            // Count that miss
+            addTotalMiss();
+
+            assert(nextLevel != nullptr);
+            // Write the evicted entry to the next level
+            if( writebackDirty &&
+                cacheMem[ indexLRU + setField*assoc].Valid == true) {
+                int tag = cacheMem[indexLRU + setField*assoc].Tag;
+                tag = tag << (getSetSize() + getBlockOffsetSize());
+                int Set = setField;
+                Set = Set << (getBlockOffsetSize());
+                int lru_addr = tag + Set;
+                nextLevel->addressRequest(lru_addr);
+            }
+            // Load the requested address from next level
+            nextLevel->addressRequest(address);
+
+            // Update LRU / Tag / Valid
+            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
+            cacheMem[ indexLRU + setField*assoc].Valid = true;
+            updateLRU( setField, indexLRU );
+
+        }
+        else{
+            // Count that hit
+            addHit();
+
+            // Swap
+            
+            updateLRU( setField, index );
+        }
+    }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -448,7 +498,7 @@ void cache::addressRequest( unsigned long address ) {
     addRequest();
 
     // Miss
-    if( index == -1 && victim == nullptr ) {
+    if( index == -1 ) {
         // Get the LRU index
         int indexLRU = getLRU( setField );
         if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
@@ -468,6 +518,9 @@ void cache::addressRequest( unsigned long address ) {
             Set = Set << (getBlockOffsetSize());
             int lru_addr = tag + Set;
             nextLevel->addressRequest(lru_addr);
+            if (victim){
+                victim->isHitVC(address, lru_addr);
+            }
         }
         // Load the requested address from next level
         nextLevel->addressRequest(address);
@@ -476,92 +529,6 @@ void cache::addressRequest( unsigned long address ) {
         cacheMem[ indexLRU + setField*assoc].Tag = tagField;
         cacheMem[ indexLRU + setField*assoc].Valid = true;
         updateLRU( setField, indexLRU );
-    }
-    // miss in L1D and check victim
-    else if ( index == -1 &&  victim != nullptr ){
-        int index_victim = victim->isHit(tagField, setField);
-        // miss in victim
-        if (index_victim == -1){
-            // Get the LRU index
-            int indexLRU = getLRU( setField );
-            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
-                addEntryRemoved();
-            }
-
-            // Count that miss
-            addTotalMiss();
-
-            // Write the evicted entry to victim
-            if( writebackDirty &&
-                cacheMem[ indexLRU + setField*assoc].Valid == true) {
-                int tag = cacheMem[indexLRU + setField*assoc].Tag;
-                tag = tag << (getSetSize() + getBlockOffsetSize());
-                int Set = setField;
-                Set = Set << (getBlockOffsetSize());
-                int lru_addr = tag + Set;
-                victim->addressRequest(lru_addr);
-            }
-            // Load the requested address from next level
-            assert(nextLevel != nullptr);
-            nextLevel->addressRequest(address);
-
-            // Update LRU / Tag / Valid
-            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
-            cacheMem[ indexLRU + setField*assoc].Valid = true;
-            updateLRU( setField, indexLRU );
-
-            indexLRU = getLRU( setField );
-            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
-                addEntryRemoved();
-            }
-
-            // evicting victim
-
-            assert(nextLevel != nullptr);
-            // Write the evicted entry to the next level
-            if( writebackDirty &&
-                cacheMem[ indexLRU + setField*assoc].Valid == true) {
-                int tag = cacheMem[indexLRU + setField*assoc].Tag;
-                tag = tag << (getSetSize() + getBlockOffsetSize());
-                int Set = setField;
-                Set = Set << (getBlockOffsetSize());
-                int lru_addr = tag + Set;
-                nextLevel->addressRequest(lru_addr);
-            }
-
-            // Update LRU / Tag / Valid
-            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
-            cacheMem[ indexLRU + setField*assoc].Valid = true;
-            updateLRU( setField, indexLRU );
-
-            }
-        // hit in victim
-        else{
-            // hit because of victim
-            addHit();
-
-            // Get the LRU index
-            int indexLRU = getLRU( setField );
-            // Update LRU / Tag / Valid
-            updateLRU( setField, index );
-
-            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
-                addEntryRemoved();
-            }
-
-            // Write the evicted entry to the victim cache
-            if( writebackDirty &&
-            cacheMem[ indexLRU + setField*assoc].Valid == true) {
-                int tag = cacheMem[indexLRU + setField*assoc].Tag;
-                tag = tag << (getSetSize() + getBlockOffsetSize());
-                int Set = setField;
-                Set = Set << (getBlockOffsetSize());
-                int lru_addr = tag + Set;
-                victim->addressRequest(lru_addr);
-            }   
-
-
-        }
     }
     else {
         // Count that hit
