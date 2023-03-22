@@ -590,7 +590,7 @@ void CreateCaches(void)
                 break;
             case 2:
                 parser >> bsize >> comma >> csize >> comma >> assoc >> comma >> vsize;
-                vcache = new victim_cache(bsize, csize);
+                vcache = new victim_cache(bsize, 8*bsize);
                 dcache = new l1dcache(bsize, csize, assoc, llcache, vcache);
                 break;
             default:
