@@ -200,18 +200,17 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
 
     void victim_cache::isHitVC( unsigned long address, int lru_addr)
     {
-        // Compute Set / Tag
+        // set/tag of victim
         unsigned long tagField = getTag( address );
         unsigned long setField = getSet( address );
 
-        // Hit or Miss ?
-        int index = vcache->isHit( tagField, setField );
+        // set/tag outside
+        unsigned long tagField_miss = getTag( lru_addr );
+        unsigned long setField_miss = getSet( lru_addr );
 
-        // Get the LRU index
-        int indexLRU = getLRU( setField );
-        if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
-            addEntryRemoved();
-        }
+        // Hit or Miss ?
+        int index = isHit( tagField, setField );
+
 
         // miss
         if(index == -1){
@@ -219,10 +218,14 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
             // Count that miss
             addTotalMiss();
 
-            // Update LRU / Tag / Valid
-            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
-            cacheMem[ indexLRU + setField*assoc].Valid = true;
-            updateLRU( setField, indexLRU );
+            // Get the LRU index
+            int indexLRU_miss = getLRU( setField_miss );
+            if( cacheMem[ indexLRU_miss + setField_miss*assoc].Valid == true ) {
+                addEntryRemoved();
+            }
+            cacheMem[ indexLRU_miss + setField_miss*assoc].Tag = tagField_miss;
+            cacheMem[ indexLRU_miss + setField_miss*assoc].Valid = true;
+            updateLRU( setField_miss, indexLRU_miss );
 
         }
         else{
@@ -230,12 +233,10 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
             addHit();
 
             // Swap
-            // send to l1d
-            nextLevel->updateLRU( setField, index );
             // update lru victim
-            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
-            cacheMem[ indexLRU + setField*assoc].Valid = true;
-            updateLRU( setField, indexLRU );
+            cacheMem[ index + setField*assoc].Tag = tagField_miss;
+            cacheMem[ index + setField*assoc].Valid = true;
+            updateLRU( setField, index );
 
         }
     }
