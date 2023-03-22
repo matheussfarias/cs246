@@ -231,6 +231,8 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
         else{
             // Count that hit
             addHit();
+            std::cout << "hit victim";
+            std::exit(1);
 
             // Swap
             // update lru victim
