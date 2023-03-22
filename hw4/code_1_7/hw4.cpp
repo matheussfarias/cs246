@@ -510,7 +510,7 @@ void cache::addressRequest( unsigned long address ) {
             cacheMem[ indexLRU + setField*assoc].Valid = true;
             updateLRU( setField, indexLRU );
 
-            int indexLRU = getLRU( setField );
+            indexLRU = getLRU( setField );
             if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
                 addEntryRemoved();
             }
