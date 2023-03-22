@@ -231,7 +231,7 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
 
             // Swap
             // send to l1d
-            dcache->updateLRU( setField, index );
+            nextLevel->updateLRU( setField, index );
             // update lru victim
             cacheMem[ indexLRU + setField*assoc].Tag = tagField;
             cacheMem[ indexLRU + setField*assoc].Valid = true;
