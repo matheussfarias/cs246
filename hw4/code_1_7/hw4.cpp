@@ -195,7 +195,7 @@ void PrintResults(void);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: you will need to implement functions which will be called for the victim cache!
 victim_cache::victim_cache( int blockSize, int totalCacheSize) :
-    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, llcache, nullptr, false)
+    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, dcache, nullptr, false)
     { }
 
     void victim_cache::isHitVC( unsigned long address, int lru_addr)
@@ -207,30 +207,17 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
         // Hit or Miss ?
         int index = vcache->isHit( tagField, setField );
 
+        // Get the LRU index
+        int indexLRU = getLRU( setField );
+        if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
+            addEntryRemoved();
+        }
+
         // miss
         if(index == -1){
-            // Get the LRU index
-            int indexLRU = getLRU( setField );
-            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
-                addEntryRemoved();
-            }
 
             // Count that miss
             addTotalMiss();
-
-            assert(nextLevel != nullptr);
-            // Write the evicted entry to the next level
-            if( writebackDirty &&
-                cacheMem[ indexLRU + setField*assoc].Valid == true) {
-                int tag = cacheMem[indexLRU + setField*assoc].Tag;
-                tag = tag << (getSetSize() + getBlockOffsetSize());
-                int Set = setField;
-                Set = Set << (getBlockOffsetSize());
-                int lru_addr = tag + Set;
-                nextLevel->addressRequest(lru_addr);
-            }
-            // Load the requested address from next level
-            nextLevel->addressRequest(address);
 
             // Update LRU / Tag / Valid
             cacheMem[ indexLRU + setField*assoc].Tag = tagField;
@@ -243,8 +230,13 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
             addHit();
 
             // Swap
-            llcache->addressRequest(lru_addr);
-            vcache->updateLRU(setField, index);
+            // send to l1d
+            dcache->updateLRU( setField, index );
+            // update lru victim
+            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
+            cacheMem[ indexLRU + setField*assoc].Valid = true;
+            updateLRU( setField, indexLRU );
+
         }
     }
 
