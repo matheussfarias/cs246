@@ -232,8 +232,6 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
             // Count that hit
             addHit();
 
-            // Swap
-            // update lru victim
             cacheMem[ index + setField*assoc].Tag = tagField_miss;
             cacheMem[ index + setField*assoc].Valid = true;
             updateLRU( setField, index );
@@ -657,7 +655,7 @@ void PrintResults(void)
 
     out << "\t\t I-Cache Miss: " << icache->getTotalMiss() << " out of " << icache->getRequest() << endl;
 
-    out << "\t\t D-Cache Miss: " << dcache->getTotalMiss() << " out of " << dcache->getRequest() << endl;
+    out << "\t\t D-Cache Miss: " << dcache->getTotalMiss() - vcache->getHit() << " out of " << dcache->getRequest() << endl;
 
     out << "\t\t L2-Cache Miss: " << llcache->getTotalMiss() << " out of " << llcache->getRequest() << endl;
 
