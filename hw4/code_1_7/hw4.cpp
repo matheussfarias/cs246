@@ -119,7 +119,7 @@ public:
     victim_cache(int blockSize, int totalCacheSize);
 
 	// you will need to implement functions which will be called for the victim cache!
-    void isHitVC(unsigned long address, int lru_addr)
+    void isHitVC(unsigned long address, int lru_addr);
 
 };
 
