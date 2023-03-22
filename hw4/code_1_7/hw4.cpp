@@ -520,7 +520,7 @@ void cache::addressRequest( unsigned long address ) {
             int lru_addr = tag + Set;
             nextLevel->addressRequest(lru_addr);
             if (victim){
-                victim->isHitVC(address, lru_addr);
+                victim->victim_cache::isHitVC(address, lru_addr);
             }
         }
         // Load the requested address from next level
