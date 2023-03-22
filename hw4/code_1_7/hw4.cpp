@@ -179,6 +179,7 @@ KNOB<UINT64> KnobInstructionCount(KNOB_MODE_WRITEONCE, "pintool",
 l1icache* icache;
 l1dcache* dcache;
 l2cache* llcache;
+// victim!
 victim_cache* vcache;
 memory* mem;
 
@@ -193,7 +194,7 @@ void PrintResults(void);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: you will need to implement functions which will be called for the victim cache!
 victim_cache::victim_cache( int blockSize, int totalCacheSize) :
-    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, nullptr, nullptr, false)
+    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, llcache, nullptr, false)
     { }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,7 +509,31 @@ void cache::addressRequest( unsigned long address ) {
             cacheMem[ indexLRU + setField*assoc].Tag = tagField;
             cacheMem[ indexLRU + setField*assoc].Valid = true;
             updateLRU( setField, indexLRU );
-            
+
+            int indexLRU = getLRU( setField );
+            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
+                addEntryRemoved();
+            }
+
+            // evicting victim
+
+            assert(nextLevel != nullptr);
+            // Write the evicted entry to the next level
+            if( writebackDirty &&
+                cacheMem[ indexLRU + setField*assoc].Valid == true) {
+                int tag = cacheMem[indexLRU + setField*assoc].Tag;
+                tag = tag << (getSetSize() + getBlockOffsetSize());
+                int Set = setField;
+                Set = Set << (getBlockOffsetSize());
+                int lru_addr = tag + Set;
+                nextLevel->addressRequest(lru_addr);
+            }
+
+            // Update LRU / Tag / Valid
+            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
+            cacheMem[ indexLRU + setField*assoc].Valid = true;
+            updateLRU( setField, indexLRU );
+
             }
         // hit in victim
         else{
