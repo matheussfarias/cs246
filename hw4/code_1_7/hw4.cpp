@@ -119,7 +119,7 @@ public:
     victim_cache(int blockSize, int totalCacheSize);
 
 	// you will need to implement functions which will be called for the victim cache!
-    void isHitVC(unsigned long address, int lru_addr);
+    void victim_cache::isHitVC(unsigned long address, int lru_addr);
 
 };
 
@@ -520,7 +520,7 @@ void cache::addressRequest( unsigned long address ) {
             int lru_addr = tag + Set;
             nextLevel->addressRequest(lru_addr);
             if (victim){
-                victim->isHitVC(address, lru_addr);
+                victim->victim_cache::isHitVC(address, lru_addr);
             }
         }
         // Load the requested address from next level
