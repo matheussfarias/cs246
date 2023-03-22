@@ -230,11 +230,7 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
         }
         else{
             // Count that hit
-            std::cout << getHit() << "\n";
             addHit();
-            std::cout << getHit() << "\n";
-            std::cout << "hit victim";
-            std::exit(1);
 
             // Swap
             // update lru victim
@@ -594,7 +590,7 @@ void CreateCaches(void)
                 break;
             case 2:
                 parser >> bsize >> comma >> csize >> comma >> assoc >> comma >> vsize;
-                vcache = new victim_cache(8, csize);
+                vcache = new victim_cache(bsize, 256);
                 dcache = new l1dcache(bsize, csize, assoc, llcache, vcache);
                 break;
             default:
