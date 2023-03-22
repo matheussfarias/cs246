@@ -476,12 +476,41 @@ void cache::addressRequest( unsigned long address ) {
         cacheMem[ indexLRU + setField*assoc].Valid = true;
         updateLRU( setField, indexLRU );
     }
+    // miss in L1D and check victim
     else if ( index == -1 &&  victim != nullptr ){
         int index_victim = victim->isHit(tagField, setField);
         // miss in victim
         if (index_victim == -1){
+            // Get the LRU index
+            int indexLRU = getLRU( setField );
+            if( cacheMem[ indexLRU + setField*assoc].Valid == true ) {
+                addEntryRemoved();
+            }
 
-        }
+            // Count that miss
+            addTotalMiss();
+
+            // Write the evicted entry to victim
+            if( writebackDirty &&
+                cacheMem[ indexLRU + setField*assoc].Valid == true) {
+                int tag = cacheMem[indexLRU + setField*assoc].Tag;
+                tag = tag << (getSetSize() + getBlockOffsetSize());
+                int Set = setField;
+                Set = Set << (getBlockOffsetSize());
+                int lru_addr = tag + Set;
+                victim->addressRequest(lru_addr);
+            }
+            // Load the requested address from next level
+            assert(nextLevel != nullptr);
+            nextLevel->addressRequest(address);
+
+            // Update LRU / Tag / Valid
+            cacheMem[ indexLRU + setField*assoc].Tag = tagField;
+            cacheMem[ indexLRU + setField*assoc].Valid = true;
+            updateLRU( setField, indexLRU );
+            
+            }
+        // hit in victim
         else{
             // hit because of victim
             addHit();
