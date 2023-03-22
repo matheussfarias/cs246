@@ -239,7 +239,6 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
 
         }
         else{
-            else {
             // Count that hit
             addHit();
 
