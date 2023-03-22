@@ -116,12 +116,10 @@ public:
 
 class victim_cache : public cache {
 public:
-    victim_cache(int blockSize, int totalCacheSize):
-    cache( blockSize, totalCacheSize, totalCacheSize / blockSize, llcache, nullptr, false)
-    { }
+    victim_cache(int blockSize, int totalCacheSize);
 
 	// you will need to implement functions which will be called for the victim cache!
-    void victim_cache::isHitVC(unsigned long address, int lru_addr);
+    void isHitVC(unsigned long address, int lru_addr);
 
 };
 
