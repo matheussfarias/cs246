@@ -230,7 +230,9 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
         }
         else{
             // Count that hit
+            std::cout << getTotalMiss() << "\n";
             addHit();
+            std::cout << getTotalMiss() << "\n";
             std::cout << "hit victim";
             std::exit(1);
 
