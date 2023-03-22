@@ -244,7 +244,7 @@ victim_cache::victim_cache( int blockSize, int totalCacheSize) :
 
             // Swap
             llcache->addressRequest(lru_addr);
-            vcache->updateLRU(setField, lru_index);
+            vcache->updateLRU(setField, index);
         }
     }
 
