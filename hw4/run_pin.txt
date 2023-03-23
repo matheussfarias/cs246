@@ -9,7 +9,7 @@ $PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile hmmer/hmmer4.ou
 $PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile hmmer/hmmer8.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
 
 direct
-x$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile victim1_hmmer.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
+$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile victim1_hmmer.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
 x$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile victim2_hmmer.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
 x$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile victim3_hmmer.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
 x$PIN_ROOT/pin -t obj-intel64/hw4.so -config config-base -outfile victim4_hmmer.out -- $HOME/shared_data/benchmarks/hmmer_O3 $HOME/shared_data/benchmarks/inputs/nph3.hmm $HOME/shared_data/benchmarks/inputs/swiss41
