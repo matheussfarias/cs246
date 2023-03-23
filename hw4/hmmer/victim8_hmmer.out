@@ -15,10 +15,10 @@ Memory system->
 		L2-cache block size (bytes) : 64
 Simulated events->
 		 I-Cache Miss: 958825 out of 1000000001
-		 D-Cache Miss: 172162802 out of 584580099
-		 L2-Cache Miss: 64866827 out of 419752071
+		 D-Cache Miss: 28936293 out of 584580086
+		 L2-Cache Miss: 65244015 out of 417120365
 
-		 Requests resulted in 1584580100 L1 requests, 419752071 L2 requests, 129717270 mem requests 
+		 Requests resulted in 1584580087 L1 requests, 417120365 L2 requests, 130471646 mem requests 
 
 
 ------------------------------------------------
