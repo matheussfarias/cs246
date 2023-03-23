@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
 
-quantum_misses = [, , , ]
-likwid_quantum = 
-hmmer_misses = [, , , ]
-likwid_hmmer = 
+quantum_misses = [22555910,22484565,22489545,23175119,22485026,22603386,22484951,22485505 ]
+hmmer_misses = [170492790,181390932,179432626,172271267,172335559,173861248,177130440,172162802 ]
 associativity = [1,2,3,4,5,6,7,8]
 
 plt.plot(associativity, quantum_misses, color = 'crimson', marker='o')
