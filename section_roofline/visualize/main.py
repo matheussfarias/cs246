@@ -8,11 +8,11 @@ if __name__ == "__main__":
     # TODO: insert your recorded values here for peak compute / bw
     # use maximum number of cores per socket
     
-    COMPUTE_ROOFLINE_VALUES = [   5.3019/(2**10) + 0.9815*2/(2**10), 2*742.4104/(2**10) + 0.0014/(2**10), 0.0280/(2**10) + 2*0.2129/(2**10)] # use GFLOPS SP
-    COMPUTE_ROOFLINE_LABELS = [  "FP_OP_QUANTUM",   "FP_OP_DEAL", "FP_OP_HMMER"]
+    COMPUTE_ROOFLINE_VALUES = [   2400.97] # use GFLOPS SP
+    COMPUTE_ROOFLINE_LABELS = [  ""]
 
-    MEMORY_ROOFLINE_VALUES = [  0.6055, 2.3883, 0.9046] # use GB/sec
-    MEMORY_ROOFLINE_LABELS = [  "quantum",  "deal",  "hmmer"]
+    MEMORY_ROOFLINE_VALUES = [  64.16] # use GB/sec
+    MEMORY_ROOFLINE_LABELS = [  ""]
 
     # rename server using `lscpu` command
     SERVER_MODEL = "Intel(R) Xeon(R) CPU E5-2683 v4 @ 2.10GHz" 
@@ -64,9 +64,15 @@ if __name__ == "__main__":
 
 
     ax.set_xlabel("Arithmetic Intensity (FLOP/Byte)", fontsize=xlabel_size)
-    ax.set_ylabel("Single Precision Throughput (GFLOP/s)", fontsize=ylabel_size)
+    ax.set_ylabel("Compute Throughput (GFLOP/s)", fontsize=ylabel_size)
+    ax.set_yscale('log')
+    ax.set_xscale('log')
     ax.set_title(f"{SERVER_MODEL}\nRoofline Model", fontsize=title_size)
     
+    plt.plot(0.007233520, 0.007233520/0.6055, marker="o", markersize=10, color = "crimson", label = "quantum") # quantum
+    plt.plot(0.001610147672, 0.001610147672/2.3883, marker="o", markersize=10, color = "blue", label = "dealII") # deal
+    plt.plot(0.00440908, 0.007233520/0.9046, marker="o", markersize=10, color = "black", label = "hmmer") # hmmer
+    plt.legend()
     plt.tight_layout()
     plt.savefig("./roofline.pdf", dpi=100)
     plt.clf()

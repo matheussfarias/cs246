@@ -18,8 +18,5 @@ export OMP_NUM_THREADS=$NUM_CORES
 # N:total_cache:num_threads - N:360kB:32 - 360kB total memory size, 36 threads, each core gets 10kB
 
 # Note: add _sp after peakflops to get single precision results
-likwid-bench -t peakflops_sp -W N:10kB:1
-likwid-bench -t peakflops_sp_sse -W N:10kB:1
-likwid-bench -t peakflops_sp_avx -W N:10kB:1
 likwid-bench -t peakflops_sp_avx_fma -W N:10kB:1
 
